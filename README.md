@@ -1,5 +1,7 @@
 # CLARA multi-language application demo
 
+![Build Status](https://github.com/JeffersonLab/clara-demo/workflows/Clara%20Demo%20CI/badge.svg)
+
 Example of a CLARA application wrapping a multi-language legacy library into services.
 
 OpenCV is used to simulate a legacy application that detects faces and pupils

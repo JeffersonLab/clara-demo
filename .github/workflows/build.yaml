@@ -1,0 +1,44 @@
+name: Clara Demo CI
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build and run
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt install libzmq5-dev libprotobuf-dev protobuf-compiler
+          sudo apt install libopencv-dev
+
+      - name: Prepare environment
+        run: |
+          echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
+          echo "CLARA_HOME=$HOME/clara-home" >> $GITHUB_ENV
+          echo "CLARA_DATA_HOME=$HOME/clara-home" >> $GITHUB_ENV
+          echo "DEPS_DIR=$HOME/deps" >> $GITHUB_ENV
+
+      - name: Install Clara
+        run: |
+          ./scripts/install-clara
+
+      - name: Patch Clara
+        run: |
+          wget -O- https://userweb.jlab.org/~smancill/java_lib_path.patch | patch -p1 -d "$CLARA_HOME"
+
+      - name: Build and run demo
+        env:
+          LD_LIBRARY_PATH: /usr/lib/jni
+        run: |
+          ./scripts/install-demo
+          ./scripts/run-demo
